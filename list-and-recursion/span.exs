@@ -5,7 +5,7 @@ defmodule Span do
   end
 
   def primeNumbers(n) do
-    for x <- span(2, n), isPrime(n), do: x
+    for x <- span(2, n), isPrime(x), do: x
   end
 
   def isPrime(2), do: true
