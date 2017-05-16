@@ -40,8 +40,8 @@ defmodule Issues.TableParser do
     " ##{pad(id_width," ")}| created_at #{pad(created_at_width - 8," ")}| title#{pad(title_width-6, " ")}"
   end
 
-  def seperator(_data) do
-
+  def seperator(%{issues: _issues, id_width: id_width, created_at_width: created_at_width, title_width: title_width}) do
+    "#{pad(id_width+2,"-")}+#{pad(created_at_width+2,"-")}+#{pad(title_width+2,"-")}"
   end
 
   def rows(_data) do
