@@ -33,18 +33,25 @@ defmodule Issues.TableParser do
   end
 
 
-  def pad(number, character) when number > 0, do: "#{character}#{pad(number-1)}"
+  def pad(number, character) when number >= 0, do: "#{character}#{pad(number-1)}"
   def pad(_), do: ""
 
-  def header(%{issues: _issues, id_width: id_width, created_at_width: created_at_width, title_width: title_width}) do
-    " ##{pad(id_width," ")}| created_at #{pad(created_at_width - 8," ")}| title#{pad(title_width-6, " ")}"
+  def header(%{issues: issues, id_width: id_width, created_at_width: created_at_width, title_width: title_width}) do
+    head = " ##{pad(id_width," ")}| created_at #{pad(created_at_width - 8," ")}| title#{pad(title_width-6, " ")}"
+    %{issues: issues, id_width: id_width, created_at_width: created_at_width, title_width: title_width, result: head}
   end
 
-  def seperator(%{issues: _issues, id_width: id_width, created_at_width: created_at_width, title_width: title_width}) do
-    "#{pad(id_width+2,"-")}+#{pad(created_at_width+2,"-")}+#{pad(title_width+2,"-")}"
+  def seperator(%{issues: issues, id_width: id_width, created_at_width: created_at_width, title_width: title_width, result: data}) do
+    data = "#{data}\r\n#{pad(id_width+2,"-")}+#{pad(created_at_width+2,"-")}+#{pad(title_width+2,"-")}"
+    %{issues: issues, id_width: id_width, created_at_width: created_at_width, title_width: title_width, result: data}
   end
 
-  def rows(_data) do
+  def rows(%{issues: issues, id_width: id_width, created_at_width: created_at_width, title_width: title_width, result: data}) do
+    rows = for row <- issues, do: get_parsed_row(row, id_width, created_at_width, title_width)
+    "#{data}\r\n#{Enum.join(rows, "\r\n")}"
+  end
 
+  def get_parsed_row(issue, _id_width, _created_at_width, _title_width) do
+    "#{Map.get(issue, "id")}|#{Map.get(issue, "created_at")}|#{Map.get(issue, "title")}"
   end
 end
