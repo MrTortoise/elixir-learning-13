@@ -1,4 +1,4 @@
-defmodule Link3 do
+defmodule Link4 do
   import :timer, only: [ sleep: 1 ]
 
   def sad_function do
@@ -8,7 +8,8 @@ defmodule Link3 do
 
   def run do
     Process.flag(:trap_exit,true)
-    spawn_link(Link3, :sad_function, [])
+    res =   spawn_monitor(Link4, :sad_function, [])
+    IO.puts inspect res
     receive do
       msg -> IO.puts "MESSAGE RECEIVED: #{inspect msg}"
     after 1000 ->
@@ -19,4 +20,4 @@ defmodule Link3 do
 
 end
 
-Link3.run
+Link4.run
