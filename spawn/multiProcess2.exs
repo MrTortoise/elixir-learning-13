@@ -11,17 +11,18 @@ defmodule MultipleProcesses do
 
   def startSleepWhat do
     IO.puts "starting sendQuit"
-    spawn_link(MultipleProcesses, :sendQuit, [self()])
+    res = spawn_monitor(MultipleProcesses, :sendQuit, [self()])
+    IO.puts inspect res
     IO.puts "about to sleep"
     sleep 500
     IO.puts "woken"
     receive do
-      {:howdy, contents} ->
-        IO.puts "Howdy message #{contents}"
-        startSleepWhat()
-      {:boom, contents} ->
-        IO.puts "boom #{contents}"
-        startSleepWhat()
+      msg ->
+        IO.puts "Howdy message #{inspect msg}"
+
+      after 1000 -> IO.puts "that all folks"
     end
   end
 end
+
+MultipleProcesses.startSleepWhat()
